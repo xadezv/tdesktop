@@ -103,6 +103,13 @@ jobs:
           git config --global user.name "Sample"
 
       - uses: Eden-CI/msvc-dev-cmd@master
+      - name: Patch library project files for VS2022 toolset.
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path $env:USERPROFILE\TBuild -Recurse -Filter '*.vcxproj' -ErrorAction SilentlyContinue | ForEach-Object {
+            (Get-Content $_.FullName) -replace '<PlatformToolset>v145</PlatformToolset>', '<PlatformToolset>v143</PlatformToolset>' | Set-Content $_.FullName
+          }
+
         name: Native Tools Command Prompt.
         with:
           arch: ${{ matrix.arch }}
